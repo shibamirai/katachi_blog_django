@@ -1,4 +1,10 @@
-from django.shortcuts import render
+from django.views import generic
+from .models import Post
 
-def index_view(request):
-    return render(request, 'blog/index.html')
+
+class PostListView(generic.ListView):
+    template_name = 'blog/posts/index.html'
+
+    def get_queryset(self):
+        self.queryset = Post.objects.select_related('category').order_by('-posted_at')
+        return super().get_queryset()

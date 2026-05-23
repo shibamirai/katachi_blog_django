@@ -1,0 +1,30 @@
+{% load static %}
+
+<a class="align-items-center d-flex flex-row gap-3 link-body-emphasis text-decoration-none"
+    href="#"
+>
+    <img class="img-thumbnail col-6"
+        {% if post.thumbnail %}
+            src="{{ post.thumbnail.url }}"
+        {% else %}
+            src="{% static 'logo.png' %}"
+        {% endif %}
+        alt="{{ post.title }}"
+    >
+    <hgroup class="col-6">
+        <strong class="d-block text-wrap">
+            {{ post.title }}
+        </strong>
+        <small>
+            <p class="card-text text-truncate">
+                {{ post.body }}
+            </p>
+            <span class="badge text-bg-secondary">
+                {{ post.category.name }}
+            </span>
+            <time class="text-muted float-end">
+                {{ post.posted_at }}
+            </time>
+        </small>
+    </hgroup>
+</a>
