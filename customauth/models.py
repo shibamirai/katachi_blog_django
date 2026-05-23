@@ -13,6 +13,7 @@ class CustomUserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             name=name,
+            **extra_fields
         )
 
         user.set_password(password)
