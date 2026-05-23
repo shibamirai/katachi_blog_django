@@ -10,8 +10,17 @@
     {% bootstrap_javascript %}
 </head>
 <body>
-    <div class="bg-primary">
-        <h1 class="text-white">テスト</h1>
+    <div class="min-vh-100 d-flex flex-column">
+        {% include 'nav.html' %}
+
+        {% block head %}
+        {% endblock %}
+        <div class="flex-grow-1 align-content-center">
+            {% block content %}
+            {% endblock content %}
+        </div>
+
+        {% include 'footer.html' %}
     </div>
 </body>
 </html>
