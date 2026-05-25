@@ -20,7 +20,7 @@
                                 {{ post.modified_at }} 更新
                             </small>
                         </time>
-                        <a href="#"
+                        <a href="{% url 'home' %}{% querystring author=post.author.id %}"
                             class="text-decoration-none link-body-emphasis"
                         >
                             <span class="float-end fw-bold">

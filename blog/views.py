@@ -22,6 +22,12 @@ class PostListView(generic.ListView):
                 category_id=category_id
             )
 
+        author_id = self.request.GET.get('author')
+        if author_id:
+            queryset = queryset.filter(
+                author_id=author_id 
+            )
+
         return queryset.select_related('category').order_by('-posted_at')
 
     def get_context_data(self, **kwargs):
