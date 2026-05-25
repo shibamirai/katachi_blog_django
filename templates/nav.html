@@ -19,6 +19,14 @@
                             ようこそ {{ user.name }} さん
                         </a>
                         <ul class="dropdown-menu">
+                            {% if user.is_admin %}
+                                <li>
+                                    {% url 'create' as create_url %}
+                                    <a href="{{ create_url }}"
+                                        class="dropdown-item{% if request.path == create_url %} active{% endif %}"
+                                    >新規投稿</a>
+                                </li>
+                            {% endif %}
                             <li>
                                 <form id="logout-form" method="POST" action="{% url 'customauth:logout' %}">
                                     {% csrf_token %}

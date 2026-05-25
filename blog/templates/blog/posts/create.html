@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main class="container form-post">
+        <form method="POST" enctype="multipart/form-data"
+            class="border rounded-2 p-4 d-flex flex-column gap-4"
+        >
+            <h1 class="h5 text-center fw-bold">お知らせ投稿</h1>
+            {% csrf_token %}
+            {{ form }}
+            <button class="btn btn-primary">投稿</button>
+        </form>
+    </main>
+{% endblock %}
