@@ -41,6 +41,22 @@ class PostListView(generic.ListView):
         return context
 
 
+class MyPostListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView):
+    template_name = 'blog/posts/mylist.html'
+    paginate_by = 10
+
+    def test_func(self):
+        """管理者しかアクセスできないようにする"""
+        return self.request.user.is_admin
+
+    def get_queryset(self):
+        """ログインユーザが投稿したものだけ表示"""
+        queryset = Post.objects.filter(
+            author_id=self.request.user.id 
+        )
+        return queryset.select_related('category').order_by('-posted_at')
+
+
 class PostDetailView(generic.DetailView):
     template_name = 'blog/posts/detail.html'
     queryset = Post.objects.select_related('category').select_related('author')

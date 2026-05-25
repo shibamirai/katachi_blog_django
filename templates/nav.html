@@ -21,6 +21,12 @@
                         <ul class="dropdown-menu">
                             {% if user.is_admin %}
                                 <li>
+                                    {% url 'mylist' as mylist_url %}
+                                    <a href="{{ mylist_url }}"
+                                        class="dropdown-item{% if request.path == mylist_url %} active{% endif %}"
+                                    >投稿記事一覧</a>
+                                </li>
+                                <li>
                                     {% url 'create' as create_url %}
                                     <a href="{{ create_url }}"
                                         class="dropdown-item{% if request.path == create_url %} active{% endif %}"

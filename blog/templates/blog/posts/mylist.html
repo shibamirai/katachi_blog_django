@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main class="container py-4">
+        <h1 class="h5 text-center fw-bold">投稿記事一覧</h1>
+
+        {% if post_list.count == 0 %}
+            投稿された記事はありません
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>投稿日</th>
+                            <th>タイトル</th>
+                            <th>編集／削除</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for post in post_list %}
+                            <tr>
+                                <td>
+                                    {{ post.posted_at|date:'Y/m/d' }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'detail' post.slug %}">
+                                        {{ post.title }}
+                                    </a>
+                                </td>
+                                <td class="d-flex align-content-center gap-2">
+                                    <a href="#" class="icon-link">
+                                        {% include 'icons/edit.html' %}
+                                    </a>
+                                    <a href="#" class="icon-link link-danger">
+                                        {% include 'icons/delete.html' %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'pagination.html' %}
+        {% endif %}
+    </main>
+{% endblock %}
