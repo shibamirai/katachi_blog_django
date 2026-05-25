@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views import generic
@@ -67,10 +68,11 @@ class PostDetailView(generic.DetailView):
         return context
 
 
-class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
+class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/posts/create.html'
     success_url = reverse_lazy('home')
+    success_message = '「%(title)s」を投稿しました'
 
     def test_func(self):
         """
