@@ -31,9 +31,14 @@
                                     <a href="{% url 'update' post.slug %}" class="icon-link">
                                         {% include 'icons/edit.html' %}
                                     </a>
-                                    <a href="#" class="icon-link link-danger">
-                                        {% include 'icons/delete.html' %}
-                                    </a>
+                                    <form action="{% url 'delete' post.slug %}" method="POST" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn p-1 icon-link link-danger"
+                                            onclick="return confirm('本当に削除しますか？')"
+                                        >
+                                            {% include 'icons/delete.html' %}
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}

@@ -102,3 +102,24 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     
     def get_success_url(self):
         return reverse('detail', kwargs={'slug': self.object.slug})
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
+    """
+    確認画面なしで記事を削除する
+    確認画面を挟む場合は template_name で設定し GET でアクセスする
+    """
+    model = Post
+    success_url = reverse_lazy('mylist')
+    success_message = '「%(title)s」を削除しました'
+    
+    def test_func(self):
+        """投稿者本人しかアクセスできないようにする"""
+        post = self.get_object()
+        return post.author == self.request.user
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            title=self.object.title,
+        )

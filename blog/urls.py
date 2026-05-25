@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.http import require_POST
 from . import views
 
 urlpatterns = [
@@ -7,4 +8,5 @@ urlpatterns = [
     path('posts/create', views.PostCreateView.as_view(), name='create'),
     path('posts/<slug:slug>', views.PostDetailView.as_view(), name='detail'),
     path('posts/<slug:slug>/update', views.PostUpdateView.as_view(), name='update'),
+    path('posts/<slug:slug>/delete', require_POST(views.PostDeleteView.as_view()), name='delete'),
 ]
