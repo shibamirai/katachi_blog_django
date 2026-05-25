@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.views import generic
 from .models import Post
 
@@ -7,8 +8,14 @@ class PostListView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        self.queryset = Post.objects.select_related('category').order_by('-posted_at')
-        return super().get_queryset()
+        queryset = Post.objects.all()
+
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(title__contains=search) | Q(body__contains=search)
+            )
+        return queryset.select_related('category').order_by('-posted_at')
 
 
 class PostDetailView(generic.DetailView):

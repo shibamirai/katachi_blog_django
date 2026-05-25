@@ -3,5 +3,20 @@
         <h1 class="fs-4 font-bold">
             お知らせ一覧
         </h1>
+        <search class="mt-4 row justify-content-center">
+            <form class="col-auto" action="{% url 'home' %}">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        {% include 'icons/search.html' %}
+                    </span>
+                    <input type="search"
+                        class="form-control"
+                        name="search"
+                        value="{{ request.GET.search }}"
+                        placeholder="検索"
+                    >
+                </div>
+            </form>
+        </search>
     </div>
 </header>
