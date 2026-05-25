@@ -8,7 +8,7 @@
                 <hgroup>
                     <h1 class="h4 lh-lg">{{ post.title }}</h1>
                     <p>
-                        <a href="#"
+                        <a href="{% url 'home' %}{% querystring category=post.category_id %}"
                             class="text-decoration-none"
                         >
                             <span class="badge text-bg-secondary">

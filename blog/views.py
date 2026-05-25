@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.views import generic
-from .models import Post
+from .models import Post, Category
 
 
 class PostListView(generic.ListView):
@@ -15,7 +15,20 @@ class PostListView(generic.ListView):
             queryset = queryset.filter(
                 Q(title__contains=search) | Q(body__contains=search)
             )
+
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(
+                category_id=category_id
+            )
+
         return queryset.select_related('category').order_by('-posted_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['current_category'] = Category.objects.filter(id=self.request.GET.get('category')).first()
+        return context
 
 
 class PostDetailView(generic.DetailView):
