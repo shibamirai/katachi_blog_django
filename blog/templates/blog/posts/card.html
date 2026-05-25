@@ -1,7 +1,7 @@
 {% load static %}
 
 <a class="align-items-center d-flex flex-row gap-3 link-body-emphasis text-decoration-none"
-    href="#"
+    href="{% url 'detail' post.slug %}"
 >
     <img class="img-thumbnail col-6"
         {% if post.thumbnail %}
