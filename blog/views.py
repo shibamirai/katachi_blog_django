@@ -2,9 +2,9 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views import generic
-from .forms import PostCreateForm
+from .forms import PostForm
 from .models import Post, Category
 
 
@@ -69,7 +69,7 @@ class PostDetailView(generic.DetailView):
 
 
 class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.CreateView):
-    form_class = PostCreateForm
+    form_class = PostForm
     template_name = 'blog/posts/create.html'
     success_url = reverse_lazy('home')
     success_message = '「%(title)s」を投稿しました'
@@ -87,3 +87,18 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         form.instance.author = self.request.user
         form.instance.slug = datetime.now().strftime('%Y%m%d%H%M')
         return super().form_valid(form)
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.UpdateView):
+    form_class = PostForm
+    template_name = 'blog/posts/edit.html'
+    queryset = Post.objects.select_related('category').select_related('author')
+    success_message = '「%(title)s」を更新しました'
+
+    def test_func(self):
+        """投稿者本人しかアクセスできないようにする"""
+        post = self.get_object()
+        return post.author == self.request.user
+    
+    def get_success_url(self):
+        return reverse('detail', kwargs={'slug': self.object.slug})

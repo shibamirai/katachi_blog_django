@@ -1,8 +1,9 @@
 from django import forms
 from .models import Post
+from .widgets import ClearableFileInput
 
 
-class PostCreateForm(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'thumbnail', 'body', 'category')
@@ -10,7 +11,7 @@ class PostCreateForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 "class": "form-control"
             }),
-            'thumbnail': forms.ClearableFileInput(attrs={
+            'thumbnail': ClearableFileInput(attrs={
                 "class": "form-control"
             }),
             'body': forms.Textarea(attrs={
