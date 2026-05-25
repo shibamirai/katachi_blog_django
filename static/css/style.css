@@ -1,0 +1,12 @@
+.errorlist {
+    list-style: none;
+    color: red;
+    margin-bottom: 0;
+    padding-left: 0;
+    font-size: small;
+}
+
+.form-auth {
+    max-width: 450px;
+    padding: 2rem 1rem;
+}

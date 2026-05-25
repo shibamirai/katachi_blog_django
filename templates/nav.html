@@ -13,16 +13,33 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="#"
-                        class="nav-link"
-                    >アカウント登録</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#"
-                        class="nav-link"
-                    >ログイン</a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            ようこそ {{ user.name }} さん
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form id="logout-form" method="POST" action="{% url 'customauth:logout' %}">
+                                    {% csrf_token %}
+                                    <button class="dropdown-item">ログアウト</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="#"
+                            class="nav-link"
+                        >アカウント登録</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'customauth:login' as login_url %}
+                        <a href="{{ login_url }}"
+                            class="nav-link{% if request.path == login_url %} active{% endif %}"
+                        >ログイン</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
