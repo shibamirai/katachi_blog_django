@@ -5,8 +5,8 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
-from .forms import PostForm, CommentCreateForm
-from .models import Post, Category
+from .forms import PostForm, CommentForm
+from .models import Post, Category, Comment
 
 
 class PostListView(generic.ListView):
@@ -80,7 +80,7 @@ class PostDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['recent_posts'] = Post.objects.filter(category_id=self.object.category_id).order_by('-posted_at')[:5]
-        context['form'] = CommentCreateForm()
+        context['form'] = CommentForm()
         return context
 
 
@@ -148,7 +148,7 @@ class CommentCreateFormView(generic.detail.SingleObjectMixin, generic.FormView):
     URL から特定した Post に対してコメントを付与するため、SingleObjectMixin で model に Post を指定する
     """
     template_name = 'blog/posts/detail.html'    # バリデーションエラー時に編集画面に戻すために必要
-    form_class = CommentCreateForm
+    form_class = CommentForm
     model = Post
 
     def post(self, request, *args, **kwargs):
@@ -166,3 +166,22 @@ class CommentCreateFormView(generic.detail.SingleObjectMixin, generic.FormView):
         form.instance.author = self.request.user
         form.save()
         return super().form_valid(form)
+
+
+class CommentDetailView(generic.DetailView):
+    template_name = 'blog/comments/detail.html'
+    model = Comment
+
+
+class CommentUpdateView(UserPassesTestMixin, generic.UpdateView):
+    template_name = 'blog/comments/update.html'
+    model = Comment
+    form_class = CommentForm
+
+    def test_func(self):
+        # 投稿者本人しかアクセスできないようにする
+        self.object = self.get_object()
+        return self.object.author == self.request.user
+
+    def get_success_url(self):
+        return reverse('comment', kwargs={'pk': self.object.id})
