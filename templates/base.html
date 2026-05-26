@@ -1,5 +1,6 @@
 {% load static %}
 {% load django_bootstrap5 %}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -10,6 +11,7 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% htmx_script %}
 </head>
 <body>
     <div class="min-vh-100 d-flex flex-column">
