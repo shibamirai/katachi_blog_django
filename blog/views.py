@@ -2,9 +2,10 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
-from django.views import generic
-from .forms import PostForm
+from django.views import generic, View
+from .forms import PostForm, CommentCreateForm
 from .models import Post, Category
 
 
@@ -58,13 +59,28 @@ class MyPostListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView):
         return queryset.select_related('category').order_by('-posted_at')
 
 
+class PostView(View):
+    def get(self, request, *args, **kwargs):
+        view = PostDetailView.as_view()
+        return view(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        view = CommentCreateFormView.as_view()
+        return view(request, *args, **kwargs)
+
+
 class PostDetailView(generic.DetailView):
+    """
+    PostView への GET リクエストで呼ばれる
+    DetailView にコメント作成フォームを追加している
+    """
     template_name = 'blog/posts/detail.html'
     queryset = Post.objects.select_related('category').select_related('author')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['recent_posts'] = Post.objects.filter(category_id=self.object.category_id).order_by('-posted_at')[:5]
+        context['form'] = CommentCreateForm()
         return context
 
 
@@ -123,3 +139,30 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
             cleaned_data,
             title=self.object.title,
         )
+
+
+class CommentCreateFormView(generic.detail.SingleObjectMixin, generic.FormView):
+    """
+    PostView への POST リクエストで呼ばれる
+    フォームの処理を行うため FormView を継承する
+    URL から特定した Post に対してコメントを付与するため、SingleObjectMixin で model に Post を指定する
+    """
+    template_name = 'blog/posts/detail.html'    # バリデーションエラー時に編集画面に戻すために必要
+    form_class = CommentCreateForm
+    model = Post
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()   # URL から特定した Post を手動で object に設定
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('detail', kwargs={'slug': self.object.slug})
+
+    def form_valid(self, form):
+        # 「ログインユーザが投稿したこの Post へのコメント」として保存
+        form.instance.post = self.object
+        form.instance.author = self.request.user
+        form.save()
+        return super().form_valid(form)

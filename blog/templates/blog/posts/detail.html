@@ -49,6 +49,8 @@
                         {% empty %}
                             <p>コメントはありません。</p>
                         {% endfor %}
+
+                        {% include 'blog/comments/create.html' %}
                     </div>
                 </section>
             </main>

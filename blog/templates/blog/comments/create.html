@@ -1,0 +1,15 @@
+<div class="pt-3">
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <button class="btn btn-primary mt-1 float-end">投稿</button>
+        </form>
+    {% else %}
+        <p class="">
+            コメントを残すには
+            <a href="{% url 'customauth:register' %}" class="">アカウント登録</a> か
+            <a href="{% url 'customauth:login' %}" class="">ログイン</a> をしてください。
+        </p>
+    {% endif %}
+</div>
