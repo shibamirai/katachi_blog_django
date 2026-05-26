@@ -11,4 +11,5 @@ urlpatterns = [
     path('posts/<slug:slug>/delete', require_POST(views.PostDeleteView.as_view()), name='delete'),
     path('comment/<pk>', views.CommentDetailView.as_view(), name='comment'),
     path('comment/<pk>/update', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<pk>/delete', require_POST(views.CommentDeleteView.as_view()), name='comment-delete'),
 ]

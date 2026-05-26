@@ -185,3 +185,21 @@ class CommentUpdateView(UserPassesTestMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse('comment', kwargs={'pk': self.object.id})
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Comment
+
+    def get_object(self):
+        # コメント削除後に元の記事詳細画面に戻るために記事のスラッグを保存しておく
+        object = super().get_object()
+        self.slug = Post.objects.get(pk=object.post_id).slug
+        return object
+
+    def test_func(self):
+        # 投稿者本人しかアクセスできないようにする
+        self.object = self.get_object()
+        return self.object.author == self.request.user
+
+    def get_success_url(self):
+        return reverse('detail', kwargs={'slug': self.slug})

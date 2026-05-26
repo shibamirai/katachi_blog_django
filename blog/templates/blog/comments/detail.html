@@ -13,12 +13,13 @@
                     type="button"
                     class="btn btn-outline-primary btn-sm"
                     hx-get="{% url 'comment-update' comment.id %}"
-                >
-                    編集
-                </button>
-                <button class="btn btn-outline-danger btn-sm">
-                    削除
-                </button>
+                >編集</button>
+                <form method="POST" action="{% url 'comment-delete' comment.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-sm"
+                            onclick="return confirm('本当に削除しますか？')"
+                    >削除</button>
+                </form>
             </div>
         {% endif %}
     </div>
