@@ -40,6 +40,17 @@
                 <article class="mt-5">
                     {{ post.body|linebreaksbr }}
                 </article>
+
+                <section class="mt-5">
+                    <h5>コメント</h5>
+                    <div class="d-flex flex-column gap-2">
+                        {% for comment in post.comment_set.all %}
+                            {% include 'blog/comments/detail.html' %}
+                        {% empty %}
+                            <p>コメントはありません。</p>
+                        {% endfor %}
+                    </div>
+                </section>
             </main>
 
             <aside class="col-lg-4 pb-5">

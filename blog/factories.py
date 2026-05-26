@@ -1,7 +1,7 @@
 import factory
 from customauth.models import CustomUser
 from factory.faker import faker
-from .models import Post, Category
+from .models import Post, Category, Comment
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -44,4 +44,12 @@ class PostFactory(factory.django.DjangoModelFactory):
         if posted_at is not None:
             model_class.objects.filter(id=obj.id).update(posted_at=posted_at)
         return obj
-        
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    post = factory.Faker('random_element', elements=list(Post.objects.all()))
+    author = factory.Faker('random_element', elements=list(CustomUser.objects.all()))
+    body = factory.Faker('paragraph', locale='ja', nb_sentences=5)
